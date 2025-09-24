@@ -1,1 +1,308 @@
 
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Modern Inglenook Shunting Oyunu</title>
+<style>
+:root {
+  --bg:#0b0f26;
+  --panel:#141a3f;
+  --panel2:#192159;
+  --ink:#eef0ff;
+  --muted:#a9add6;
+  --accent:#6c5dd3;
+  --gold:#ffde59;
+  --good:#2ecc71;
+  --bad:#D02E2B;
+}
+* { box-sizing:border-box }
+html, body {
+  height:100%;
+  margin:0;
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, "Helvetica Neue", Arial, sans-serif;
+  background:radial-gradient(1200px 800px at 10% -10%, rgba(108,93,211,.18), transparent 30%), var(--bg);
+  color:var(--ink);
+}
+.wrap {
+  width: 95%;
+  max-width:1200px;
+  margin:24px auto;
+  padding:12px;
+}
+.wrap > h1 {
+  text-align: center;
+  margin-top: 0;
+  margin-bottom: 16px;
+  font-size: clamp(22px, 3vw, 32px);
+}
+.main-board {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 20px;
+  align-items: start;
+}
+.card {
+  background:linear-gradient(180deg, var(--panel), var(--panel2));
+  border:1px solid rgba(255,255,255,.07);
+  border-radius:16px;
+  box-shadow:0 12px 32px rgba(0,0,0,.35);
+  padding: 20px;
+}
+.info-card h2 {
+    font-size: 20px;
+    margin-top: 5px;
+    color: var(--gold);
+}
+.info-card p, .info-card .stat {
+  color: var(--muted);
+  line-height: 1.6;
+  font-size: 15px;
+}
+.info-card hr {
+    border: none; height: 1px;
+    background-color: rgba(255, 255, 255, 0.1);
+    margin: 24px 0;
+}
+.goalCar {
+  color: #fff;
+  text-align: center;
+  margin: 5px auto;
+  padding: 10px;
+  border-radius: 5px;
+  font-weight: bold;
+  max-width: 200px;
+}
+#goalCars > div:last-child {
+  border-radius: 5px 5px 10px 10px;
+}
+.game-area {
+    position: relative;
+    padding: 0;
+    overflow: hidden;
+}
+#leftButton, #rightButton {
+  background-color: var(--accent);
+  position: absolute;
+  font-size: x-large;
+  bottom: 1ex;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,.10);
+  width: 60px;
+  height: 50px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#leftButton:active, #rightButton:active {
+    transform: translateY(1px);
+}
+#leftButton { left: 35%; }
+#rightButton { right: 35%; }
+.btn {
+  background:linear-gradient(180deg, #273074, #1a1f55);
+  border:1px solid rgba(255,255,255,.10);
+  color:#fff; padding:10px 14px;
+  border-radius:12px; cursor:pointer; font-weight:700;
+}
+.btn.acc { background:linear-gradient(180deg,var(--accent),#4e42c2) }
+.btn.good { background:linear-gradient(180deg,#2f9b63,#177845) }
+
+/* SVG elements */
+svg {
+  display: block;
+}
+.sleeper { fill: #6a73a8; }
+.track, .rail { fill: #a9add6; }
+.buffer { fill: var(--bad); }
+.control { fill: var(--gold); }
+.controlBG { fill: #666; }
+.clickTarget { opacity: 0; cursor: pointer; }
+.uncoupler>path { fill: var(--gold); stroke:#888; stroke-width: 0.2; }
+.carNumber { fill: #fff; font-size: 5px; user-select: none; text-anchor: middle; }
+#couplerGroup>line { stroke: #666; stroke-width: 2px; }
+
+/* Modal Styles */
+.modal {
+  position:fixed; inset:0; display:none; align-items:center; justify-content:center;
+  background:rgba(5,6,16,.65); backdrop-filter:blur(5px); z-index: 1000;
+}
+.modal.active { display:flex }
+.modal .inner {
+  background:linear-gradient(180deg, var(--panel), var(--panel2));
+  border:1px solid rgba(255,255,255,.10); padding:28px; border-radius:16px;
+  max-width:520px; text-align:center; box-shadow:0 16px 40px rgba(0,0,0,.4);
+}
+.modal h2 { margin-top: 0; font-size: 24px; }
+.pass {
+  font-size:24px; font-weight:900; color:var(--gold); letter-spacing:1px;
+  text-shadow:0 0 10px rgba(255,222,89,.9), 0 0 18px rgba(108,93,211,.6);
+  word-break: break-all;
+}
+.copyline {
+  display:flex; gap:12px; align-items:center; justify-content:center; margin:16px 0;
+  background: rgba(0,0,0,0.2); padding: 12px; border-radius: 12px;
+}
+/* Responsive Design */
+@media (max-width: 960px) {
+  .main-board { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+    <h1>Inglenook Shunting Oyunu</h1>
+    <div class="main-board">
+        <div class="card info-card">
+            <h2>Görev</h2>
+            <p>Lokomotifi kullanarak vagonları doğru sırayla birleştirip aşağıdaki treni oluşturun.</p>
+            <div id="goalCars"></div>
+            <p style="margin-top: 24px;"><button id="newTrainBtn" class="btn acc">Yeni Tren</button></p>
+            <hr>
+            <h2>Açıklama</h2>
+            <p>Bu bir tren dizme bulmacasıdır. Makasları ve vagon ayırıcıları kullanarak manevra yapın ve hedef treni en kısa sürede oluşturmaya çalışın.</p>
+            <p class="stat" id="timer"></p>
+        </div>
+        
+        <div class="card game-area">
+            <svg id="gameSvg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 137 105">
+                <defs>
+                    <g id="straight">
+                        <rect class="sleeper" width="8" height="1" x="0" y="0" /><rect class="sleeper" width="8" height="2" x="0" y="3" /><rect class="sleeper" width="8" height="2" x="0" y="7" /><rect class="sleeper" width="8" height="2" x="0" y="11" /><rect class="sleeper" width="8" height="1" x="0" y="15" />
+                        <rect class="rail" width="1" height="16" x="6" y="0" /><rect class="rail" width="1" height="16" x="1" y="0" />
+                    </g>
+                    <g id="curve">
+                        <rect class="sleeper" width="8" height="1" x="0" y="19" /><rect class="sleeper" width="8" height="2" x="1.748" y="14.591" transform="rotate(5.625)" /><rect class="sleeper" width="8" height="2" x="3.104" y="10.001" transform="rotate(11.5)" /><rect class="sleeper" width="8" height="2" x="3.911" y="5.366" transform="rotate(16.875)" /><rect class="sleeper" width="8" height="1" x="4.304" y="1.64" transform="rotate(22.5)" />
+                        <path class="rail" d="M 2,20 C 2,14.484 3.086,9.023 5.197,3.927 L 4.273,3.545 C 2.112,8.762 1,14.353 1,20 Z" /><path class="rail" d="M 7,20 C 7,15.141 7.957,10.33 9.816,5.841 L 8.892,5.458 C 6.983,10.068 6,15.01 6,20 Z" />
+                    </g>
+                    <g id="buffer">
+                        <rect class="sleeper" width="8" height="2" x="0" y="0" /><rect class="sleeper" width="8" height="1" x="0" y="4" />
+                        <rect class="rail" width="1" height="5" x="1" y="0" /><rect class="rail" width="1" height="5" x="6" y="0" />
+                        <path class="buffer" d="M 1,1 h 1 l 1,3 h -3 z" /><path class="buffer" d="M 6,1 h 1 l 1,3 h -3 z" />
+                    </g>
+                    <g id="turnout">
+                        <rect class="sleeper" width="8" height="1" x="0" y="31" /><rect class="sleeper" width="12.5" height="3" x="0" y="27" /><path class="sleeper" d="m 0,23 v 2 H 3.77 L 8.55,25.92 8.95,23.96 3.97,23 Z" /><path class="sleeper" d="m 0,19 v 2 H 4.36 L 9.33,22.46 9.91,20.54 4.65,19 Z" /><path class="sleeper" d="m 0,15 v 2 H 5.24 L 10.42,19.1 11.19,17.25 5.64,15 Z" /><path class="sleeper" d="m 0,11 v 2 h 6.33 l 5.45,2.91 0.94,-1.76 L 6.84,11 Z" /><path class="sleeper" d="m 0,7 v 2 h 7.8 l 5.7,3.85 1.12,-1.66 L 8.42,7 Z" /><rect class="sleeper" width="8" height="2" x="0" y="3" /><rect class="sleeper" width="8" height="1" x="0" y="0" /><rect class="sleeper" width="8" height="2" x="10.332" y="-4.257" transform="rotate(39.375)" /><rect class="sleeper" width="8" height="1" x="9.74" y="-8.485" transform="rotate(45)" />
+                        <rect class="controlBG" width="4" height="2" x="8" y="27.5" ry="1" /><circle class="control" cx="10" cy="28.5" r="1" />
+                        <rect class="rail" width="1" height="32" x="1" y="0" /><path class="rail pointStraight" d="" /><path class="rail pointCurve" d="" />
+                        <path class="rail" d="M 6,32 C 6,21.922 10.004,12.256 17.13,5.13 l 0.707,0.707 C 10.898,12.776 7.066,22.137 7,32 Z" />
+                        <rect class="clickTarget" width="14.5" height="14" x="-1" y="20" rx="4" />
+                    </g>
+                    <g id="uncoupler">
+                        <path d="m 80,27 1,-2 h -2 z" /><path d="m 80,35 1,2 h -2 z" />
+                    </g>
+                </defs>
+                <g id="trackGroup"></g>
+                <g id="couplerGroup"></g>
+                <g id="trainGroup"></g>
+                <g id="uncouplerControlGroup"></g>
+            </svg>
+            <button id="leftButton" title="Sola Sür">
+                <svg width="24" height="24" viewBox="0 0 24 24" style="fill: white;"><path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z"></path></svg>
+            </button>
+            <button id="rightButton" title="Sağa Sür">
+                <svg width="24" height="24" viewBox="0 0 24 24" style="fill: white;"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"></path></svg>
+            </button>
+        </div>
+    </div>
+</div>
+
+<div id="modal" class="modal" role="dialog" aria-modal="true">
+  <div class="inner">
+    <h2>🎉 Tebrikler! Doğru Treni Oluşturdun!</h2>
+    <p>Bu bulmacanın şifresi aşağıdadır:</p>
+    <div class="copyline">
+      <span class="pass" id="pwd">—</span>
+      <button class="btn" id="copy">📋 Kopyala</button>
+    </div>
+    <button class="btn good" id="ok">Tamam</button>
+  </div>
+</div>
+
+<audio id="click" src="https://neil.fraser.name/beaver/shunting/click.mp3"></audio>
+<audio id="couple" src="https://neil.fraser.name/beaver/shunting/couple.mp3"></audio>
+<audio id="uncouple" src="https://neil.fraser.name/beaver/shunting/uncouple.mp3"></audio>
+<audio id="win" src="https://neil.fraser.name/beaver/shunting/win.mp3"></audio>
+
+<script>
+'use strict';
+
+// --- GAME LOGIC ---
+var RADIUS = 40;
+var LOCO_COLOUR = '#178F47';
+var CAR_COLOURS = ['#7B9AFF', '#6E90FF', '#6186FF', '#547DFF', '#4873FF'];
+var SKIP_COLOUR = '#2E5FFF';
+var TRAIN_LENGTH = 5;
+var CAR_COUNT = 8;
+var MAX_SPEED = 1;
+var turnouts = [];
+var uncouplers = [];
+var controlsActive = false;
+var locomotive = null;
+var locoActualSpeed = 0;
+var locoDesiredSpeed = 0;
+var locoAcceleration = 0.05;
+var allCars = [];
+var carOrder = [];
+var trains = [];
+var timeStart;
+var timePid;
+var SVG_NS = 'http://www.w3.org/2000/svg';
+
+// --- DOM ELEMENTS ---
+const modal = document.getElementById('modal');
+const pwdEl = document.getElementById('pwd');
+const copyBtn = document.getElementById('copy');
+const okBtn = document.getElementById('ok');
+const newTrainBtn = document.getElementById('newTrainBtn');
+const FIXED_PASSWORD = 'SHUNTING-MASTER-2025-TREN-KODU';
+
+var AbstractSegment=function(){};AbstractSegment.prototype.nextSegment=null;AbstractSegment.prototype.prevSegment=null;AbstractSegment.prototype.turnout=null;AbstractSegment.prototype.walk=function(t){return t<0?this.prevSegment?this.prevSegment.walk(t+this.prevSegment.length):[this,0,-t]:t>this.length?this.nextSegment?this.nextSegment.walk(t-this.length):[this,this.length,t-this.length]:[this,t,0]};AbstractSegment.prototype.calculateCoordinates=function(t){throw Error("Implemented by subclass")};var StraightSegment=function(t,e,i,r){this.startX=t;this.startY=e;this.deltaX=i;this.deltaY=r;this.length=Math.sqrt(i*i+r*r)};StraightSegment.prototype=new AbstractSegment;StraightSegment.prototype.calculateCoordinates=function(t){var e=t/this.length;return{x:this.startX+this.deltaX*e,y:this.startY+this.deltaY*e}};var CurveSegment=function(t,e,i,r){this.centerX=t;this.centerY=e;this.startDegrees=i;this.deltaDegrees=r;var s=Math.abs(r);s=s/180*Math.PI;this.length=RADIUS*s};CurveSegment.prototype=new AbstractSegment;CurveSegment.prototype.calculateCoordinates=function(t){var e=t/this.length;var i=(this.startDegrees+this.deltaDegrees*e);return i=i/180*Math.PI,{x:this.centerX+Math.cos(i)*RADIUS,y:this.centerY+Math.sin(i)*RADIUS}};
+var Uncoupler=function(t,e){this.node_=t;this.trackSegment_=PATH_SEGMENTS[e];var i=createSvgElement("rect");i.setAttribute("class","clickTarget");i.setAttribute("width",4);i.setAttribute("height",12);i.setAttribute("x",78);i.setAttribute("y",25);i.setAttribute("rx",1);i.setAttribute("transform",this.node_.getAttribute("transform"));document.getElementById("uncouplerControlGroup").appendChild(i);i.addEventListener("click",this.activate.bind(this))};Uncoupler.prototype.activate=function(){if(!controlsActive)return;var t=document.getElementById("uncouple");t.volume=.5;t.play();var e=this.node_;e.firstElementChild.setAttribute("transform","translate(0, 1)");e.lastElementChild.setAttribute("transform","translate(0, -1)");setTimeout(function(){e.firstElementChild.removeAttribute("transform");e.lastElementChild.removeAttribute("transform")},250);var i=this.getCar();i&&(locoActualSpeed>0&&locoDesiredSpeed<=0&&(locoActualSpeed=0),i.uncouple(),checkWin())};
+Uncoupler.prototype.getCar=function(){for(var t=0;t<allCars.length;t++){var e=allCars[t];if(e.frontSegment_===this.trackSegment_&&e.frontDistance_<5)return e.prevVehicle}return null};var Turnout=function(t,e,i,r){this.rootSegment_=PATH_SEGMENTS[e];this.straightSegment_=PATH_SEGMENTS[i];this.curveSegment_=PATH_SEGMENTS[r];this.straightSegment_.turnout=this;this.curveSegment_.turnout=this;this.pointStraight_=t.getElementsByClassName("pointStraight")[0];this.pointCurve_=t.getElementsByClassName("pointCurve")[0];this.control_=t.getElementsByClassName("control")[0];var s=t.getElementsByClassName("clickTarget")[0];s.addEventListener("click",this.toggle.bind(this));this.hasVehicle=!1;this.set_(!1)};
+Turnout.prototype.set_=function(t){this.state=t;t?(this.control_.setAttribute("cx",9),this.pointStraight_.setAttribute("d","M 6,0 H 7 V 32 H 6 Z"),this.pointCurve_.setAttribute("d","M 2.5,30.5 C 2.401,27.119 2.524,22.871 2.961,19.163 5.016,12.594 8.637,6.551 13.594,1.594 l 0.707,0.707 C 9.449,7.163 5.904,13.127 3.898,19.63 3.231,22.843 3.003,27.002 3,30.5 Z")):(this.control_.setAttribute("cx",11),this.pointStraight_.setAttribute("d","M 6,0 H 7 L 7,20 5.5,30.5 H 5 L 6,20 Z"),this.pointCurve_.setAttribute("d","M 1,32 C 1,20.596 5.53,9.658 13.594,1.594 l 0.707,0.707 C 6.49,10.128 2.066,20.811 2,32 Z"));this.rootSegment_.nextSegment=t?this.straightSegment_:this.curveSegment_};
+Turnout.prototype.toggle=function(){this.hasVehicle||(document.getElementById("click").play(),this.set_(!this.state))};var Vehicle=function(t){this.LENGTH=t?16:14;this.WIDTH=8;this.nextVehicle=null;this.prevVehicle=null;this.textNode_=null;this.AXLE_DISTANCE=this.LENGTH/2-1;var e=createSvgElement("g"),i=createSvgElement("rect");i.setAttribute("rx",1);i.setAttribute("width",this.WIDTH);e.appendChild(i);if(t){i.setAttribute("height",this.LENGTH-3);i.setAttribute("y",3);var r=createSvgElement("rect");e.appendChild(r);r.setAttribute("height",6);r.setAttribute("width",this.WIDTH);r.setAttribute("rx",3)}else{i.setAttribute("height",this.LENGTH);var s=createSvgElement("text");s.setAttribute("class","carNumber");s.setAttribute("transform","translate(4, 9) rotate(0)");this.textNode_=s;e.appendChild(s)}document.getElementById("trainGroup").appendChild(e);this.node=e;this.coupler=createSvgElement("line");document.getElementById("couplerGroup").appendChild(this.coupler);this.frontSegment_=null;this.frontDistance_=0;this.backSegment_=null;this.backDistance_=0};
+Vehicle.prototype.setColour=function(t){for(var e=0;e<this.node.childNodes.length;e++)this.node.childNodes[e].setAttribute("fill",t)};Vehicle.prototype.setNumber=function(t){var e=this.textNode_;for(;e.firstChild;)e.removeChild(e.firstChild);void 0!==t&&e.appendChild(document.createTextNode(t))};Vehicle.prototype.couple=function(t){if(this.nextVehicle||t.prevVehicle)throw Error("Vehicle already coupled");this.nextVehicle=t;t.prevVehicle=this;t.moveTo(this.backSegment_,this.backDistance_+t.LENGTH+2);var e=trains.indexOf(t);if(-1===e)throw Error("Vehicle wasn't a train");trains.splice(e,1);this.coupler.style.visibility="visible"};
+Vehicle.prototype.uncouple=function(){this.nextVehicle&&(this.nextVehicle.prevVehicle!==this&&_throw(Error("nextVehicle wasn't connected to us")),this.nextVehicle.prevVehicle=null,trains.push(this.nextVehicle),this.nextVehicle=null);this.coupler.style.visibility="hidden"};Vehicle.prototype.lengthToEnd=function(){var t=this.LENGTH+2;return this.nextVehicle&&(t+=this.nextVehicle.lengthToEnd()),t};Vehicle.prototype.moveTo=function(t,e){this.backSegment_=t;this.backDistance_=e;this.moveBy(0)};
+Vehicle.prototype.moveBy=function(t){if(t>=0){this.prevVehicle||(s=this.backSegment_.walk(this.backDistance_+t-this.AXLE_DISTANCE-this.LENGTH/2+this.lengthToEnd()))[2]===0||(locoActualSpeed=0,t-=s[2]);var e=this.backSegment_.walk(this.backDistance_+t),i=e[0].walk(e[1]-2*this.AXLE_DISTANCE)}else{var i=this.backSegment_.walk(this.backDistance_-2*this.AXLE_DISTANCE+t),e=i[0].walk(i[1]+2*this.AXLE_DISTANCE),r=e[0];!this.prevVehicle&&r.turnout&&r.prevSegment.nextSegment!==r&&r.turnout.toggle(),0!==(s=i)[2]&&(locoActualSpeed=0)}this.frontSegment_=i[0];this.frontDistance_=i[1];this.backSegment_=e[0];this.backDistance_=e[1];this.backSegment_.turnout&&(this.backSegment_.turnout.hasVehicle=!0);var s,a=i[0].calculateCoordinates(i[1]),n=e[0].calculateCoordinates(e[1]);this.coupler.setAttribute("x1",n.x);this.coupler.setAttribute("y1",n.y);this.prevVehicle&&(this.prevVehicle.coupler.setAttribute("x2",a.x),this.prevVehicle.coupler.setAttribute("y2",a.y));var o={x:(n.x+a.x)/2,y:(n.y+a.y)/2},h=-Math.atan2(n.x-a.x,n.y-a.y);h=h/Math.PI*180;this.node.setAttribute("transform","rotate("+h+", "+o.x+","+o.y+") translate("+(o.x-this.WIDTH/2)+","+(o.y-this.LENGTH/2)+")");this.nextVehicle&&this.nextVehicle.moveTo(this.backSegment_,this.backDistance_+this.nextVehicle.LENGTH+2);if(t>0)for(var c=0;c<trains.length;c++){var l=trains[c];if(l.frontSegment_===s[0]&&l.frontDistance_<=s[1]){for(var u=this;u.nextVehicle;)u=u.nextVehicle;var d=document.getElementById("couple");d.volume=.2;d.play();u.couple(l);locoActualSpeed=0;checkWin()}}};
+var HEADSHUNT_OVERFLOW=160,PATH_SEGMENTS=[new StraightSegment(8,104+HEADSHUNT_OVERFLOW,0,-HEADSHUNT_OVERFLOW),new StraightSegment(8,104,0,-32),new CurveSegment(48,71,180,45),new StraightSegment(19.716,42.716,22.627,-22.628),new CurveSegment(70.627,48.372,225,45),new StraightSegment(70.627,8.372,51,0),new CurveSegment(48,71,225,45),new StraightSegment(48,31,32,0),new StraightSegment(80,31,51,0),new CurveSegment(48,71,270,45),new CurveSegment(104.568,14.431,135,-45),new StraightSegment(104.568,54.431,19,0)];
+function init(){function t(t,e){PATH_SEGMENTS[t].nextSegment=PATH_SEGMENTS[e];PATH_SEGMENTS[e].prevSegment=PATH_SEGMENTS[t]}t(0,1),t(1,2),t(2,3),t(3,4),t(4,5),t(2,6),t(6,7),t(7,8),t(6,9),t(9,10),t(10,11);drawTrack("straight","translate(4, 103)");drawTrack("straight","translate(4, 87)");drawTrack("straight","translate(4, 71)");drawTrack("curve","translate(4, 51)");drawTrack("curve","rotate(22.5, -82.197, 55.555)");var e=drawTrack("turnout","rotate(45, -1.077, 56.328)");drawTrack("curve","rotate(45, 23.065, 66.328)");drawTrack("curve","rotate(67.5, 36.082, 54.112)");drawTrack("straight","rotate(90, 41.127, 45.5)");drawTrack("straight","rotate(90, 49.127, 53.5)");drawTrack("straight","rotate(90, 57.127, 61.5)");drawTrack("buffer","rotate(90, 59.627, 64)");var i=drawTrack("turnout","rotate(90, 26.5, 53.5)");drawTrack("straight","rotate(90, 34.5, 61.5)");drawTrack("straight","rotate(90, 42.5, 69.5)");drawTrack("straight","rotate(90, 50.5, 77.5)");drawTrack("buffer","rotate(90, 53, 80)");drawTrack("curve","rotate(-67.5, 70.117, -28.108)");drawTrack("curve","rotate(-90, 71.5, -13.068)");drawTrack("straight","rotate(90, 35.068, 85.5)");drawTrack("buffer","rotate(90, 37.568, 88)");var r=drawTrack("uncoupler","rotate(-45, 48, 71)"),s=drawTrack("uncoupler",""),a=drawTrack("uncoupler","rotate(45, 64, 32.372)");turnouts.push(new Turnout(e,2,3,6),new Turnout(i,6,7,9));uncouplers.push(new Uncoupler(r,4),new Uncoupler(s,8),new Uncoupler(a,10));for(var n=TRAIN_LENGTH;n>=0;n--){var o=document.createElement("div");o.className="goalCar";o.appendChild(document.createTextNode(n||" "));o.style.backgroundColor=n?CAR_COLOURS[n-1]:LOCO_COLOUR;document.getElementById("goalCars").appendChild(o)}locomotive=new Vehicle(!0);locomotive.setColour(LOCO_COLOUR);for(var n=0;n<CAR_COUNT;n++)allCars[n]=new Vehicle(!1),trains[n]=allCars[n];reset(location.hash.substring(1));window.addEventListener("keydown",keydown);window.addEventListener("keyup",keyup);var h=document.getElementById("leftButton");h.addEventListener("mousedown",leftButtonDown);h.addEventListener("touchstart",leftButtonDown);h.addEventListener("mouseup",buttonUp);h.addEventListener("touchend",buttonUp);var c=document.getElementById("rightButton");c.addEventListener("mousedown",rightButtonDown);c.addEventListener("touchstart",rightButtonDown);c.addEventListener("mouseup",buttonUp);c.addEventListener("touchend",buttonUp);setInterval(animation,15)}
+function factorial(t){for(var e=1,i=2;i<=t;i++)e*=i;return e}function drawTrack(t,e){var i=document.createElementNS(SVG_NS,"use");return i.setAttribute("href","#"+t),e&&i.setAttribute("transform",e),document.getElementById("trackGroup").appendChild(i)}
+function reset(t){var e=document.getElementById("goalCars");for(;e.firstChild;)e.removeChild(e.firstChild);for(var i=[],r=0;r<CAR_COUNT;r++)i[r]=r;if(t){t=Number(t);if(t<0||t>=PERMUTATIONS)t=Math.floor(Math.random()*PERMUTATIONS)}else t=Math.floor(Math.random()*PERMUTATIONS);location.hash=t;carOrder.length=0;for(var r=1;r<=TRAIN_LENGTH;r++){var s=t%i.length;carOrder.push(i[s]);i.splice(s,1);t=Math.floor(t/i.length)}for(var a,n=TRAIN_LENGTH,o=e.appendChild(document.createElement("div"));n;--n)o=e.appendChild(document.createElement("div")),o.className="goalCar",o.appendChild(document.createTextNode(n)),o.style.backgroundColor=CAR_COLOURS[carOrder[TRAIN_LENGTH-n]];o=e.appendChild(document.createElement("div"));o.className="goalCar";o.appendChild(document.createTextNode(" "));o.style.backgroundColor=LOCO_COLOUR;for(var h,r=0;r<CAR_COUNT;r++)(h=allCars[r]).uncouple(),-1!==(a=carOrder.indexOf(r))?(h.setColour(CAR_COLOURS[a]),h.setNumber(TRAIN_LENGTH-a)):(h.setColour(SKIP_COLOUR),h.setNumber(void 0)),trains[r]=h;locomotive.uncouple();locomotive.moveTo(PATH_SEGMENTS[5],20);allCars[0].moveTo(PATH_SEGMENTS[5],36);allCars[1].moveTo(PATH_SEGMENTS[5],52);allCars[2].moveTo(PATH_SEGMENTS[8],20);allCars[3].moveTo(PATH_SEGMENTS[8],36);allCars[4].moveTo(PATH_SEGMENTS[8],52);allCars[5].moveTo(PATH_SEGMENTS[11],20);allCars[6].moveTo(PATH_SEGMENTS[11],36);allCars[7].moveTo(PATH_SEGMENTS[11],52);controlsActive=!0;checkWin();timeStart=Date.now();timePid=setInterval(updateTimer,100)}
+function updateTimer(){var t=Math.round((Date.now()-timeStart)/1e3),e=Math.floor(t/60);t=String(t%60).padStart(2,"0");document.getElementById("timer").textContent=e+":"+t}function checkWin(){var t=locomotive,e=!0;for(var i=0;i<TRAIN_LENGTH;i++){if(!(t=t.nextVehicle)){e=!1;break}t.textNode_.firstChild&&Number(t.textNode_.firstChild.data)===i+1||(e=!1)}t&&t.nextVehicle&&(e=!1);if(e){document.getElementById("win").play();clearInterval(timePid);controlsActive=!1;pwdEl.textContent = FIXED_PASSWORD;modal.classList.add('active');}}
+function keydown(t){controlsActive&&(t.key.startsWith("Arrow")?t.key==="ArrowLeft"?leftButtonDown():t.key==="ArrowRight"&&rightButtonDown():" "===t.key||"Spacebar"===t.key?uncouplers.forEach(function(t){t.activate()}):t.key>="1"&&t.key<="9"&&turnouts[Number(t.key)-1]&&turnouts[Number(t.key)-1].toggle(),t.preventDefault())}
+function keyup(t){controlsActive&&(t.key.startsWith("Arrow")&&(buttonUp(),t.preventDefault()))}function leftButtonDown(){locoDesiredSpeed=-MAX_SPEED;document.getElementById("leftButton").classList.add("active")}function rightButtonDown(){locoDesiredSpeed=MAX_SPEED;document.getElementById("rightButton").classList.add("active")}function buttonUp(){locoDesiredSpeed=0;document.getElementById("leftButton").classList.remove("active");document.getElementById("rightButton").classList.remove("active")}
+function animation(){if(locoActualSpeed!==locoDesiredSpeed){var t=Math.min(Math.abs(locoDesiredSpeed-locoActualSpeed),locoAcceleration);locoActualSpeed<locoDesiredSpeed?locoActualSpeed+=t:locoActualSpeed-=t}for(var e=0;e<turnouts.length;e++)turnouts[e].hasVehicle=!1;if(0!==locoActualSpeed)for(var i=0;i.e.,i<trains.length;i++)trains[i].moveBy(locoActualSpeed)}function createSvgElement(t){return document.createElementNS(SVG_NS,t)}window.addEventListener("load",init);
+
+// --- MODAL & CLIPBOARD LOGIC ---
+okBtn.addEventListener('click', () => modal.classList.remove('active'));
+modal.addEventListener('click', e => { if (e.target === modal) modal.classList.remove('active'); });
+newTrainBtn.addEventListener('click', () => reset());
+async function copyToClipboard(text) {
+  try {
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(text); return true;
+    } else {
+      const ta = document.createElement('textarea');
+      ta.value = text; ta.setAttribute('readonly', '');
+      ta.style.position = 'fixed'; ta.style.top = '-9999px';
+      document.body.appendChild(ta); ta.select();
+      const ok = document.execCommand('copy');
+      document.body.removeChild(ta); return ok;
+    }
+  } catch (e) { console.warn('Clipboard failed:', e); return false; }
+}
+async function handleCopy() {
+    const textToCopy = (pwdEl.textContent || '').trim();
+    if (!textToCopy || textToCopy === '—') return;
+    const ok = await copyToClipboard(textToCopy);
+    copyBtn.textContent = ok ? '✅ Kopyalandı' : '❌ Hata';
+    setTimeout(() => copyBtn.textContent = '📋 Kopyala', 1500);
+}
+copyBtn.addEventListener('click', handleCopy);
+
+</script>
+</body>
+</html>
