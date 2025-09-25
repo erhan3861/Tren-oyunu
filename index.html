@@ -1,54 +1,53 @@
-
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Modern Inglenook Shunting Oyunu</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Inglenook Shunting Oyunu</title>
 <style>
 :root {
-  --bg:#0b0f26;
-  --panel:#141a3f;
-  --panel2:#192159;
-  --ink:#eef0ff;
-  --muted:#a9add6;
-  --accent:#6c5dd3;
-  --gold:#ffde59;
-  --good:#2ecc71;
-  --bad:#D02E2B;
+    --bg:#0b0f26;
+    --panel:#141a3f;
+    --panel2:#192159;
+    --ink:#eef0ff;
+    --muted:#a9add6;
+    --accent:#6c5dd3;
+    --gold:#ffde59;
+    --good:#2ecc71;
+    --bad:#D02E2B;
 }
 * { box-sizing:border-box }
 html, body {
-  height:100%;
-  margin:0;
-  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, "Helvetica Neue", Arial, sans-serif;
-  background:radial-gradient(1200px 800px at 10% -10%, rgba(108,93,211,.18), transparent 30%), var(--bg);
-  color:var(--ink);
+    height:100%;
+    margin:0;
+    font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, "Helvetica Neue", Arial, sans-serif;
+    background:radial-gradient(1200px 800px at 10% -10%, rgba(108,93,211,.18), transparent 30%), var(--bg);
+    color:var(--ink);
 }
 .wrap {
-  width: 95%;
-  max-width:1200px;
-  margin:24px auto;
-  padding:12px;
+    width: 95%;
+    max-width: 1200px;
+    margin: 24px auto;
+    padding: 12px;
 }
-.wrap > h1 {
-  text-align: center;
-  margin-top: 0;
-  margin-bottom: 16px;
-  font-size: clamp(22px, 3vw, 32px);
+h1, h2 {
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 16px;
+    font-size: clamp(22px, 3vw, 32px);
 }
 .main-board {
-  display: grid;
-  grid-template-columns: 300px 1fr;
-  gap: 20px;
-  align-items: start;
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 20px;
+    align-items: start;
 }
 .card {
-  background:linear-gradient(180deg, var(--panel), var(--panel2));
-  border:1px solid rgba(255,255,255,.07);
-  border-radius:16px;
-  box-shadow:0 12px 32px rgba(0,0,0,.35);
-  padding: 20px;
+    background:linear-gradient(180deg, var(--panel), var(--panel2));
+    border:1px solid rgba(255,255,255,.07);
+    border-radius:16px;
+    box-shadow:0 12px 32px rgba(0,0,0,.35);
+    padding: 20px;
 }
 .info-card h2 {
     font-size: 20px;
@@ -56,9 +55,10 @@ html, body {
     color: var(--gold);
 }
 .info-card p, .info-card .stat {
-  color: var(--muted);
-  line-height: 1.6;
-  font-size: 15px;
+    color: var(--muted);
+    line-height: 1.6;
+    font-size: 15px;
+    text-align: center;
 }
 .info-card hr {
     border: none; height: 1px;
@@ -66,16 +66,16 @@ html, body {
     margin: 24px 0;
 }
 .goalCar {
-  color: #fff;
-  text-align: center;
-  margin: 5px auto;
-  padding: 10px;
-  border-radius: 5px;
-  font-weight: bold;
-  max-width: 200px;
+    color: #fff;
+    text-align: center;
+    margin: 5px auto;
+    padding: 10px;
+    border-radius: 5px;
+    font-weight: bold;
+    max-width: 200px;
 }
 #goalCars > div:last-child {
-  border-radius: 5px 5px 10px 10px;
+    border-radius: 5px 5px 10px 10px;
 }
 .game-area {
     position: relative;
@@ -83,18 +83,19 @@ html, body {
     overflow: hidden;
 }
 #leftButton, #rightButton {
-  background-color: var(--accent);
-  position: absolute;
-  font-size: x-large;
-  bottom: 1ex;
-  border-radius: 12px;
-  border: 1px solid rgba(255,255,255,.10);
-  width: 60px;
-  height: 50px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    background-color: var(--accent);
+    position: absolute;
+    font-size: x-large;
+    bottom: 1ex;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,.10);
+    width: 60px;
+    height: 50px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
 }
 #leftButton:active, #rightButton:active {
     transform: translateY(1px);
@@ -102,20 +103,18 @@ html, body {
 #leftButton { left: 35%; }
 #rightButton { right: 35%; }
 .btn {
-  background:linear-gradient(180deg, #273074, #1a1f55);
-  border:1px solid rgba(255,255,255,.10);
-  color:#fff; padding:10px 14px;
-  border-radius:12px; cursor:pointer; font-weight:700;
+    background:linear-gradient(180deg, #273074, #1a1f55);
+    border:1px solid rgba(255,255,255,.10);
+    color:#fff; padding:10px 14px;
+    border-radius:12px; cursor:pointer; font-weight:700;
 }
 .btn.acc { background:linear-gradient(180deg,var(--accent),#4e42c2) }
 .btn.good { background:linear-gradient(180deg,#2f9b63,#177845) }
 
 /* SVG elements */
-svg {
-  display: block;
-}
+svg { display: block; }
 .sleeper { fill: #6a73a8; }
-.track, .rail { fill: #a9add6; }
+.rail { fill: #a9add6; }
 .buffer { fill: var(--bad); }
 .control { fill: var(--gold); }
 .controlBG { fill: #666; }
@@ -126,28 +125,29 @@ svg {
 
 /* Modal Styles */
 .modal {
-  position:fixed; inset:0; display:none; align-items:center; justify-content:center;
-  background:rgba(5,6,16,.65); backdrop-filter:blur(5px); z-index: 1000;
+    position:fixed; inset:0; display:none; align-items:center; justify-content:center;
+    background:rgba(5,6,16,.65); backdrop-filter:blur(5px); z-index: 1000;
 }
 .modal.active { display:flex }
 .modal .inner {
-  background:linear-gradient(180deg, var(--panel), var(--panel2));
-  border:1px solid rgba(255,255,255,.10); padding:28px; border-radius:16px;
-  max-width:520px; text-align:center; box-shadow:0 16px 40px rgba(0,0,0,.4);
+    background:linear-gradient(180deg, var(--panel), var(--panel2));
+    border:1px solid rgba(255,255,255,.10); padding:28px; border-radius:16px;
+    max-width:520px; text-align:center; box-shadow:0 16px 40px rgba(0,0,0,.4);
 }
-.modal h2 { margin-top: 0; font-size: 24px; }
+.modal h2 { margin-top: 0; font-size: 24px; color: var(--ink); }
+.modal p { color: var(--muted); }
 .pass {
-  font-size:24px; font-weight:900; color:var(--gold); letter-spacing:1px;
-  text-shadow:0 0 10px rgba(255,222,89,.9), 0 0 18px rgba(108,93,211,.6);
-  word-break: break-all;
+    font-size:24px; font-weight:900; color:var(--gold); letter-spacing:1px;
+    text-shadow:0 0 10px rgba(255,222,89,.9), 0 0 18px rgba(108,93,211,.6);
+    word-break: break-all;
 }
 .copyline {
-  display:flex; gap:12px; align-items:center; justify-content:center; margin:16px 0;
-  background: rgba(0,0,0,0.2); padding: 12px; border-radius: 12px;
+    display:flex; gap:12px; align-items:center; justify-content:center; margin:16px 0;
+    background: rgba(0,0,0,0.2); padding: 12px; border-radius: 12px;
 }
 /* Responsive Design */
 @media (max-width: 960px) {
-  .main-board { grid-template-columns: 1fr; }
+    .main-board { grid-template-columns: 1fr; }
 }
 </style>
 </head>
@@ -162,9 +162,8 @@ svg {
             <div id="goalCars"></div>
             <p style="margin-top: 24px;"><button id="newTrainBtn" class="btn acc">Yeni Tren</button></p>
             <hr>
-            <h2>Açıklama</h2>
-            <p>Bu bir tren dizme bulmacasıdır. Makasları ve vagon ayırıcıları kullanarak manevra yapın ve hedef treni en kısa sürede oluşturmaya çalışın.</p>
-            <p class="stat" id="timer"></p>
+            <h2>Süre</h2>
+            <p class="stat" id="timer">0:00</p>
         </div>
         
         <div class="card game-area">
@@ -210,21 +209,21 @@ svg {
 </div>
 
 <div id="modal" class="modal" role="dialog" aria-modal="true">
-  <div class="inner">
-    <h2>🎉 Tebrikler! Doğru Treni Oluşturdun!</h2>
-    <p>Bu bulmacanın şifresi aşağıdadır:</p>
-    <div class="copyline">
-      <span class="pass" id="pwd">—</span>
-      <button class="btn" id="copy">📋 Kopyala</button>
+    <div class="inner">
+        <h2>🎉 Tebrikler, Bulmaca Çözüldü!</h2>
+        <p>Kuleyi başarıyla taşıdınız. İşte bu başarının ödülü:</p>
+        <div class="copyline">
+            <span class="pass" id="pwd"></span>
+            <button class="btn" id="copyBtn">📋 Kopyala</button>
+        </div>
+        <button class="btn good" id="okBtn">Harika!</button>
     </div>
-    <button class="btn good" id="ok">Tamam</button>
-  </div>
 </div>
 
-<audio id="click" src="https://neil.fraser.name/beaver/shunting/click.mp3"></audio>
-<audio id="couple" src="https://neil.fraser.name/beaver/shunting/couple.mp3"></audio>
-<audio id="uncouple" src="https://neil.fraser.name/beaver/shunting/uncouple.mp3"></audio>
-<audio id="win" src="https://neil.fraser.name/beaver/shunting/win.mp3"></audio>
+<audio id="click" src="click.mp3"></audio>
+<audio id="couple" src="couple.mp3"></audio>
+<audio id="uncouple" src="uncouple.mp3"></audio>
+<audio id="win" src="win.mp3"></audio>
 
 <script>
 'use strict';
@@ -236,6 +235,7 @@ var CAR_COLOURS = ['#7B9AFF', '#6E90FF', '#6186FF', '#547DFF', '#4873FF'];
 var SKIP_COLOUR = '#2E5FFF';
 var TRAIN_LENGTH = 5;
 var CAR_COUNT = 8;
+var PERMUTATIONS = factorial(CAR_COUNT) / factorial(CAR_COUNT - TRAIN_LENGTH);
 var MAX_SPEED = 1;
 var turnouts = [];
 var uncouplers = [];
@@ -254,54 +254,589 @@ var SVG_NS = 'http://www.w3.org/2000/svg';
 // --- DOM ELEMENTS ---
 const modal = document.getElementById('modal');
 const pwdEl = document.getElementById('pwd');
-const copyBtn = document.getElementById('copy');
-const okBtn = document.getElementById('ok');
+const copyBtn = document.getElementById('copyBtn');
+const okBtn = document.getElementById('okBtn');
 const newTrainBtn = document.getElementById('newTrainBtn');
 const FIXED_PASSWORD = 'SHUNTING-MASTER-2025-TREN-KODU';
 
-var AbstractSegment=function(){};AbstractSegment.prototype.nextSegment=null;AbstractSegment.prototype.prevSegment=null;AbstractSegment.prototype.turnout=null;AbstractSegment.prototype.walk=function(t){return t<0?this.prevSegment?this.prevSegment.walk(t+this.prevSegment.length):[this,0,-t]:t>this.length?this.nextSegment?this.nextSegment.walk(t-this.length):[this,this.length,t-this.length]:[this,t,0]};AbstractSegment.prototype.calculateCoordinates=function(t){throw Error("Implemented by subclass")};var StraightSegment=function(t,e,i,r){this.startX=t;this.startY=e;this.deltaX=i;this.deltaY=r;this.length=Math.sqrt(i*i+r*r)};StraightSegment.prototype=new AbstractSegment;StraightSegment.prototype.calculateCoordinates=function(t){var e=t/this.length;return{x:this.startX+this.deltaX*e,y:this.startY+this.deltaY*e}};var CurveSegment=function(t,e,i,r){this.centerX=t;this.centerY=e;this.startDegrees=i;this.deltaDegrees=r;var s=Math.abs(r);s=s/180*Math.PI;this.length=RADIUS*s};CurveSegment.prototype=new AbstractSegment;CurveSegment.prototype.calculateCoordinates=function(t){var e=t/this.length;var i=(this.startDegrees+this.deltaDegrees*e);return i=i/180*Math.PI,{x:this.centerX+Math.cos(i)*RADIUS,y:this.centerY+Math.sin(i)*RADIUS}};
-var Uncoupler=function(t,e){this.node_=t;this.trackSegment_=PATH_SEGMENTS[e];var i=createSvgElement("rect");i.setAttribute("class","clickTarget");i.setAttribute("width",4);i.setAttribute("height",12);i.setAttribute("x",78);i.setAttribute("y",25);i.setAttribute("rx",1);i.setAttribute("transform",this.node_.getAttribute("transform"));document.getElementById("uncouplerControlGroup").appendChild(i);i.addEventListener("click",this.activate.bind(this))};Uncoupler.prototype.activate=function(){if(!controlsActive)return;var t=document.getElementById("uncouple");t.volume=.5;t.play();var e=this.node_;e.firstElementChild.setAttribute("transform","translate(0, 1)");e.lastElementChild.setAttribute("transform","translate(0, -1)");setTimeout(function(){e.firstElementChild.removeAttribute("transform");e.lastElementChild.removeAttribute("transform")},250);var i=this.getCar();i&&(locoActualSpeed>0&&locoDesiredSpeed<=0&&(locoActualSpeed=0),i.uncouple(),checkWin())};
-Uncoupler.prototype.getCar=function(){for(var t=0;t<allCars.length;t++){var e=allCars[t];if(e.frontSegment_===this.trackSegment_&&e.frontDistance_<5)return e.prevVehicle}return null};var Turnout=function(t,e,i,r){this.rootSegment_=PATH_SEGMENTS[e];this.straightSegment_=PATH_SEGMENTS[i];this.curveSegment_=PATH_SEGMENTS[r];this.straightSegment_.turnout=this;this.curveSegment_.turnout=this;this.pointStraight_=t.getElementsByClassName("pointStraight")[0];this.pointCurve_=t.getElementsByClassName("pointCurve")[0];this.control_=t.getElementsByClassName("control")[0];var s=t.getElementsByClassName("clickTarget")[0];s.addEventListener("click",this.toggle.bind(this));this.hasVehicle=!1;this.set_(!1)};
-Turnout.prototype.set_=function(t){this.state=t;t?(this.control_.setAttribute("cx",9),this.pointStraight_.setAttribute("d","M 6,0 H 7 V 32 H 6 Z"),this.pointCurve_.setAttribute("d","M 2.5,30.5 C 2.401,27.119 2.524,22.871 2.961,19.163 5.016,12.594 8.637,6.551 13.594,1.594 l 0.707,0.707 C 9.449,7.163 5.904,13.127 3.898,19.63 3.231,22.843 3.003,27.002 3,30.5 Z")):(this.control_.setAttribute("cx",11),this.pointStraight_.setAttribute("d","M 6,0 H 7 L 7,20 5.5,30.5 H 5 L 6,20 Z"),this.pointCurve_.setAttribute("d","M 1,32 C 1,20.596 5.53,9.658 13.594,1.594 l 0.707,0.707 C 6.49,10.128 2.066,20.811 2,32 Z"));this.rootSegment_.nextSegment=t?this.straightSegment_:this.curveSegment_};
-Turnout.prototype.toggle=function(){this.hasVehicle||(document.getElementById("click").play(),this.set_(!this.state))};var Vehicle=function(t){this.LENGTH=t?16:14;this.WIDTH=8;this.nextVehicle=null;this.prevVehicle=null;this.textNode_=null;this.AXLE_DISTANCE=this.LENGTH/2-1;var e=createSvgElement("g"),i=createSvgElement("rect");i.setAttribute("rx",1);i.setAttribute("width",this.WIDTH);e.appendChild(i);if(t){i.setAttribute("height",this.LENGTH-3);i.setAttribute("y",3);var r=createSvgElement("rect");e.appendChild(r);r.setAttribute("height",6);r.setAttribute("width",this.WIDTH);r.setAttribute("rx",3)}else{i.setAttribute("height",this.LENGTH);var s=createSvgElement("text");s.setAttribute("class","carNumber");s.setAttribute("transform","translate(4, 9) rotate(0)");this.textNode_=s;e.appendChild(s)}document.getElementById("trainGroup").appendChild(e);this.node=e;this.coupler=createSvgElement("line");document.getElementById("couplerGroup").appendChild(this.coupler);this.frontSegment_=null;this.frontDistance_=0;this.backSegment_=null;this.backDistance_=0};
-Vehicle.prototype.setColour=function(t){for(var e=0;e<this.node.childNodes.length;e++)this.node.childNodes[e].setAttribute("fill",t)};Vehicle.prototype.setNumber=function(t){var e=this.textNode_;for(;e.firstChild;)e.removeChild(e.firstChild);void 0!==t&&e.appendChild(document.createTextNode(t))};Vehicle.prototype.couple=function(t){if(this.nextVehicle||t.prevVehicle)throw Error("Vehicle already coupled");this.nextVehicle=t;t.prevVehicle=this;t.moveTo(this.backSegment_,this.backDistance_+t.LENGTH+2);var e=trains.indexOf(t);if(-1===e)throw Error("Vehicle wasn't a train");trains.splice(e,1);this.coupler.style.visibility="visible"};
-Vehicle.prototype.uncouple=function(){this.nextVehicle&&(this.nextVehicle.prevVehicle!==this&&_throw(Error("nextVehicle wasn't connected to us")),this.nextVehicle.prevVehicle=null,trains.push(this.nextVehicle),this.nextVehicle=null);this.coupler.style.visibility="hidden"};Vehicle.prototype.lengthToEnd=function(){var t=this.LENGTH+2;return this.nextVehicle&&(t+=this.nextVehicle.lengthToEnd()),t};Vehicle.prototype.moveTo=function(t,e){this.backSegment_=t;this.backDistance_=e;this.moveBy(0)};
-Vehicle.prototype.moveBy=function(t){if(t>=0){this.prevVehicle||(s=this.backSegment_.walk(this.backDistance_+t-this.AXLE_DISTANCE-this.LENGTH/2+this.lengthToEnd()))[2]===0||(locoActualSpeed=0,t-=s[2]);var e=this.backSegment_.walk(this.backDistance_+t),i=e[0].walk(e[1]-2*this.AXLE_DISTANCE)}else{var i=this.backSegment_.walk(this.backDistance_-2*this.AXLE_DISTANCE+t),e=i[0].walk(i[1]+2*this.AXLE_DISTANCE),r=e[0];!this.prevVehicle&&r.turnout&&r.prevSegment.nextSegment!==r&&r.turnout.toggle(),0!==(s=i)[2]&&(locoActualSpeed=0)}this.frontSegment_=i[0];this.frontDistance_=i[1];this.backSegment_=e[0];this.backDistance_=e[1];this.backSegment_.turnout&&(this.backSegment_.turnout.hasVehicle=!0);var s,a=i[0].calculateCoordinates(i[1]),n=e[0].calculateCoordinates(e[1]);this.coupler.setAttribute("x1",n.x);this.coupler.setAttribute("y1",n.y);this.prevVehicle&&(this.prevVehicle.coupler.setAttribute("x2",a.x),this.prevVehicle.coupler.setAttribute("y2",a.y));var o={x:(n.x+a.x)/2,y:(n.y+a.y)/2},h=-Math.atan2(n.x-a.x,n.y-a.y);h=h/Math.PI*180;this.node.setAttribute("transform","rotate("+h+", "+o.x+","+o.y+") translate("+(o.x-this.WIDTH/2)+","+(o.y-this.LENGTH/2)+")");this.nextVehicle&&this.nextVehicle.moveTo(this.backSegment_,this.backDistance_+this.nextVehicle.LENGTH+2);if(t>0)for(var c=0;c<trains.length;c++){var l=trains[c];if(l.frontSegment_===s[0]&&l.frontDistance_<=s[1]){for(var u=this;u.nextVehicle;)u=u.nextVehicle;var d=document.getElementById("couple");d.volume=.2;d.play();u.couple(l);locoActualSpeed=0;checkWin()}}};
-var HEADSHUNT_OVERFLOW=160,PATH_SEGMENTS=[new StraightSegment(8,104+HEADSHUNT_OVERFLOW,0,-HEADSHUNT_OVERFLOW),new StraightSegment(8,104,0,-32),new CurveSegment(48,71,180,45),new StraightSegment(19.716,42.716,22.627,-22.628),new CurveSegment(70.627,48.372,225,45),new StraightSegment(70.627,8.372,51,0),new CurveSegment(48,71,225,45),new StraightSegment(48,31,32,0),new StraightSegment(80,31,51,0),new CurveSegment(48,71,270,45),new CurveSegment(104.568,14.431,135,-45),new StraightSegment(104.568,54.431,19,0)];
-function init(){function t(t,e){PATH_SEGMENTS[t].nextSegment=PATH_SEGMENTS[e];PATH_SEGMENTS[e].prevSegment=PATH_SEGMENTS[t]}t(0,1),t(1,2),t(2,3),t(3,4),t(4,5),t(2,6),t(6,7),t(7,8),t(6,9),t(9,10),t(10,11);drawTrack("straight","translate(4, 103)");drawTrack("straight","translate(4, 87)");drawTrack("straight","translate(4, 71)");drawTrack("curve","translate(4, 51)");drawTrack("curve","rotate(22.5, -82.197, 55.555)");var e=drawTrack("turnout","rotate(45, -1.077, 56.328)");drawTrack("curve","rotate(45, 23.065, 66.328)");drawTrack("curve","rotate(67.5, 36.082, 54.112)");drawTrack("straight","rotate(90, 41.127, 45.5)");drawTrack("straight","rotate(90, 49.127, 53.5)");drawTrack("straight","rotate(90, 57.127, 61.5)");drawTrack("buffer","rotate(90, 59.627, 64)");var i=drawTrack("turnout","rotate(90, 26.5, 53.5)");drawTrack("straight","rotate(90, 34.5, 61.5)");drawTrack("straight","rotate(90, 42.5, 69.5)");drawTrack("straight","rotate(90, 50.5, 77.5)");drawTrack("buffer","rotate(90, 53, 80)");drawTrack("curve","rotate(-67.5, 70.117, -28.108)");drawTrack("curve","rotate(-90, 71.5, -13.068)");drawTrack("straight","rotate(90, 35.068, 85.5)");drawTrack("buffer","rotate(90, 37.568, 88)");var r=drawTrack("uncoupler","rotate(-45, 48, 71)"),s=drawTrack("uncoupler",""),a=drawTrack("uncoupler","rotate(45, 64, 32.372)");turnouts.push(new Turnout(e,2,3,6),new Turnout(i,6,7,9));uncouplers.push(new Uncoupler(r,4),new Uncoupler(s,8),new Uncoupler(a,10));for(var n=TRAIN_LENGTH;n>=0;n--){var o=document.createElement("div");o.className="goalCar";o.appendChild(document.createTextNode(n||" "));o.style.backgroundColor=n?CAR_COLOURS[n-1]:LOCO_COLOUR;document.getElementById("goalCars").appendChild(o)}locomotive=new Vehicle(!0);locomotive.setColour(LOCO_COLOUR);for(var n=0;n<CAR_COUNT;n++)allCars[n]=new Vehicle(!1),trains[n]=allCars[n];reset(location.hash.substring(1));window.addEventListener("keydown",keydown);window.addEventListener("keyup",keyup);var h=document.getElementById("leftButton");h.addEventListener("mousedown",leftButtonDown);h.addEventListener("touchstart",leftButtonDown);h.addEventListener("mouseup",buttonUp);h.addEventListener("touchend",buttonUp);var c=document.getElementById("rightButton");c.addEventListener("mousedown",rightButtonDown);c.addEventListener("touchstart",rightButtonDown);c.addEventListener("mouseup",buttonUp);c.addEventListener("touchend",buttonUp);setInterval(animation,15)}
-function factorial(t){for(var e=1,i=2;i<=t;i++)e*=i;return e}function drawTrack(t,e){var i=document.createElementNS(SVG_NS,"use");return i.setAttribute("href","#"+t),e&&i.setAttribute("transform",e),document.getElementById("trackGroup").appendChild(i)}
-function reset(t){var e=document.getElementById("goalCars");for(;e.firstChild;)e.removeChild(e.firstChild);for(var i=[],r=0;r<CAR_COUNT;r++)i[r]=r;if(t){t=Number(t);if(t<0||t>=PERMUTATIONS)t=Math.floor(Math.random()*PERMUTATIONS)}else t=Math.floor(Math.random()*PERMUTATIONS);location.hash=t;carOrder.length=0;for(var r=1;r<=TRAIN_LENGTH;r++){var s=t%i.length;carOrder.push(i[s]);i.splice(s,1);t=Math.floor(t/i.length)}for(var a,n=TRAIN_LENGTH,o=e.appendChild(document.createElement("div"));n;--n)o=e.appendChild(document.createElement("div")),o.className="goalCar",o.appendChild(document.createTextNode(n)),o.style.backgroundColor=CAR_COLOURS[carOrder[TRAIN_LENGTH-n]];o=e.appendChild(document.createElement("div"));o.className="goalCar";o.appendChild(document.createTextNode(" "));o.style.backgroundColor=LOCO_COLOUR;for(var h,r=0;r<CAR_COUNT;r++)(h=allCars[r]).uncouple(),-1!==(a=carOrder.indexOf(r))?(h.setColour(CAR_COLOURS[a]),h.setNumber(TRAIN_LENGTH-a)):(h.setColour(SKIP_COLOUR),h.setNumber(void 0)),trains[r]=h;locomotive.uncouple();locomotive.moveTo(PATH_SEGMENTS[5],20);allCars[0].moveTo(PATH_SEGMENTS[5],36);allCars[1].moveTo(PATH_SEGMENTS[5],52);allCars[2].moveTo(PATH_SEGMENTS[8],20);allCars[3].moveTo(PATH_SEGMENTS[8],36);allCars[4].moveTo(PATH_SEGMENTS[8],52);allCars[5].moveTo(PATH_SEGMENTS[11],20);allCars[6].moveTo(PATH_SEGMENTS[11],36);allCars[7].moveTo(PATH_SEGMENTS[11],52);controlsActive=!0;checkWin();timeStart=Date.now();timePid=setInterval(updateTimer,100)}
-function updateTimer(){var t=Math.round((Date.now()-timeStart)/1e3),e=Math.floor(t/60);t=String(t%60).padStart(2,"0");document.getElementById("timer").textContent=e+":"+t}function checkWin(){var t=locomotive,e=!0;for(var i=0;i<TRAIN_LENGTH;i++){if(!(t=t.nextVehicle)){e=!1;break}t.textNode_.firstChild&&Number(t.textNode_.firstChild.data)===i+1||(e=!1)}t&&t.nextVehicle&&(e=!1);if(e){document.getElementById("win").play();clearInterval(timePid);controlsActive=!1;pwdEl.textContent = FIXED_PASSWORD;modal.classList.add('active');}}
-function keydown(t){controlsActive&&(t.key.startsWith("Arrow")?t.key==="ArrowLeft"?leftButtonDown():t.key==="ArrowRight"&&rightButtonDown():" "===t.key||"Spacebar"===t.key?uncouplers.forEach(function(t){t.activate()}):t.key>="1"&&t.key<="9"&&turnouts[Number(t.key)-1]&&turnouts[Number(t.key)-1].toggle(),t.preventDefault())}
-function keyup(t){controlsActive&&(t.key.startsWith("Arrow")&&(buttonUp(),t.preventDefault()))}function leftButtonDown(){locoDesiredSpeed=-MAX_SPEED;document.getElementById("leftButton").classList.add("active")}function rightButtonDown(){locoDesiredSpeed=MAX_SPEED;document.getElementById("rightButton").classList.add("active")}function buttonUp(){locoDesiredSpeed=0;document.getElementById("leftButton").classList.remove("active");document.getElementById("rightButton").classList.remove("active")}
-function animation(){if(locoActualSpeed!==locoDesiredSpeed){var t=Math.min(Math.abs(locoDesiredSpeed-locoActualSpeed),locoAcceleration);locoActualSpeed<locoDesiredSpeed?locoActualSpeed+=t:locoActualSpeed-=t}for(var e=0;e<turnouts.length;e++)turnouts[e].hasVehicle=!1;if(0!==locoActualSpeed)for(var i=0;i.e.,i<trains.length;i++)trains[i].moveBy(locoActualSpeed)}function createSvgElement(t){return document.createElementNS(SVG_NS,t)}window.addEventListener("load",init);
+
+var AbstractSegment = function() {};
+AbstractSegment.prototype.nextSegment = null;
+AbstractSegment.prototype.prevSegment = null;
+AbstractSegment.prototype.turnout = null;
+AbstractSegment.prototype.walk = function(distance) {
+    if (distance < 0) {
+        if (this.prevSegment) {
+            return this.prevSegment.walk(distance + this.prevSegment.length);
+        }
+        return [this, 0, -distance];
+    }
+    if (distance > this.length) {
+        if (this.nextSegment) {
+            return this.nextSegment.walk(distance - this.length);
+        }
+        return [this, this.length, distance - this.length];
+    }
+    return [this, distance, 0];
+};
+AbstractSegment.prototype.calculateCoordinates = function(distance) {
+    throw Error('Implemented by subclass');
+};
+
+var StraightSegment = function(startX, startY, deltaX, deltaY) {
+    this.startX = startX;
+    this.startY = startY;
+    this.deltaX = deltaX;
+    this.deltaY = deltaY;
+    this.length = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+};
+StraightSegment.prototype = new AbstractSegment();
+StraightSegment.prototype.calculateCoordinates = function(distance) {
+    var fraction = distance / this.length;
+    return {
+        x: this.startX + this.deltaX * fraction,
+        y: this.startY + this.deltaY * fraction
+    };
+};
+
+var CurveSegment = function(centerX, centerY, startDegrees, deltaDegrees) {
+    this.centerX = centerX;
+    this.centerY = centerY;
+    this.startDegrees = startDegrees;
+    this.deltaDegrees = deltaDegrees;
+    var arc = Math.abs(deltaDegrees);
+    arc = arc / 180 * Math.PI;
+    this.length = RADIUS * arc;
+};
+CurveSegment.prototype = new AbstractSegment();
+CurveSegment.prototype.calculateCoordinates = function(distance) {
+    var fraction = distance / this.length;
+    var arc = (this.startDegrees + this.deltaDegrees * fraction);
+    arc = arc / 180 * Math.PI;
+    return {
+        x: this.centerX + Math.cos(arc) * RADIUS,
+        y: this.centerY + Math.sin(arc) * RADIUS
+    };
+};
+
+var Uncoupler = function(node, trackSegmentIndex) {
+    this.node_ = node;
+    this.trackSegment_ = PATH_SEGMENTS[trackSegmentIndex];
+    var rect = createSvgElement('rect');
+    rect.setAttribute('class', 'clickTarget');
+    rect.setAttribute('width', 4);
+    rect.setAttribute('height', 12);
+    rect.setAttribute('x', 78);
+    rect.setAttribute('y', 25);
+    rect.setAttribute('rx', 1);
+    rect.setAttribute('transform', this.node_.getAttribute('transform'));
+    document.getElementById('uncouplerControlGroup').appendChild(rect);
+    rect.addEventListener('click', this.activate.bind(this));
+};
+Uncoupler.prototype.activate = function() {
+    if (!controlsActive) return;
+    var audio = document.getElementById('uncouple');
+    audio.volume = 0.5;
+    audio.play();
+    var node = this.node_;
+    node.firstElementChild.setAttribute('transform', 'translate(0, 1)');
+    node.lastElementChild.setAttribute('transform', 'translate(0, -1)');
+    setTimeout(function() {
+        node.firstElementChild.removeAttribute('transform');
+        node.lastElementChild.removeAttribute('transform');
+    }, 250);
+    var car = this.getCar();
+    if (car) {
+        if (locoActualSpeed > 0 && locoDesiredSpeed <= 0) {
+            locoActualSpeed = 0;
+        }
+        car.uncouple();
+        checkWin();
+    }
+};
+Uncoupler.prototype.getCar = function() {
+    for (var i = 0; i < allCars.length; i++) {
+        var car = allCars[i];
+        if (car.frontSegment_ === this.trackSegment_ && car.frontDistance_ < 5) {
+            return car.prevVehicle;
+        }
+    }
+    return null;
+};
+
+var Turnout = function(node, rootSegmentIndex, straightSegmentIndex, curveSegmentIndex) {
+    this.rootSegment_ = PATH_SEGMENTS[rootSegmentIndex];
+    this.straightSegment_ = PATH_SEGMENTS[straightSegmentIndex];
+    this.curveSegment_ = PATH_SEGMENTS[curveSegmentIndex];
+    this.straightSegment_.turnout = this;
+    this.curveSegment_.turnout = this;
+    this.pointStraight_ = node.getElementsByClassName('pointStraight')[0];
+    this.pointCurve_ = node.getElementsByClassName('pointCurve')[0];
+    this.control_ = node.getElementsByClassName('control')[0];
+    var clickTarget = node.getElementsByClassName('clickTarget')[0];
+    clickTarget.addEventListener('click', this.toggle.bind(this));
+    this.hasVehicle = false;
+    this.set_(false);
+};
+Turnout.prototype.set_ = function(state) {
+    this.state = state;
+    if (state) {
+        this.control_.setAttribute('cx', 9);
+        this.pointStraight_.setAttribute('d', 'M 6,0 H 7 V 32 H 6 Z');
+        this.pointCurve_.setAttribute('d', 'M 2.5,30.5 C 2.401,27.119 2.524,22.871 2.961,19.163 5.016,12.594 8.637,6.551 13.594,1.594 l 0.707,0.707 C 9.449,7.163 5.904,13.127 3.898,19.63 3.231,22.843 3.003,27.002 3,30.5 Z');
+    } else {
+        this.control_.setAttribute('cx', 11);
+        this.pointStraight_.setAttribute('d', 'M 6,0 H 7 L 7,20 5.5,30.5 H 5 L 6,20 Z');
+        this.pointCurve_.setAttribute('d', 'M 1,32 C 1,20.596 5.53,9.658 13.594,1.594 l 0.707,0.707 C 6.49,10.128 2.066,20.811 2,32 Z');
+    }
+    this.rootSegment_.nextSegment = state ? this.straightSegment_ : this.curveSegment_;
+};
+Turnout.prototype.toggle = function() {
+    if (!this.hasVehicle) {
+        document.getElementById('click').play();
+        this.set_(!this.state);
+    }
+};
+
+var Vehicle = function(isLocomotive) {
+    this.LENGTH = isLocomotive ? 16 : 14;
+    this.WIDTH = 8;
+    this.nextVehicle = null;
+    this.prevVehicle = null;
+    this.textNode_ = null;
+    this.AXLE_DISTANCE = this.LENGTH / 2 - 1;
+    var g = createSvgElement('g');
+    var rect = createSvgElement('rect');
+    rect.setAttribute('rx', 1);
+    rect.setAttribute('width', this.WIDTH);
+    g.appendChild(rect);
+    if (isLocomotive) {
+        rect.setAttribute('height', this.LENGTH - 3);
+        rect.setAttribute('y', 3);
+        var head = createSvgElement('rect');
+        g.appendChild(head);
+        head.setAttribute('height', 6);
+        head.setAttribute('width', this.WIDTH);
+        head.setAttribute('rx', 3);
+    } else {
+        rect.setAttribute('height', this.LENGTH);
+        var text = createSvgElement('text');
+        text.setAttribute('class', 'carNumber');
+        text.setAttribute('transform', 'translate(4, 9) rotate(0)'); // Corrected for upright numbers
+        this.textNode_ = text;
+        g.appendChild(text);
+    }
+    document.getElementById('trainGroup').appendChild(g);
+    this.node = g;
+    this.coupler = createSvgElement('line');
+    document.getElementById('couplerGroup').appendChild(this.coupler);
+    this.frontSegment_ = null;
+    this.frontDistance_ = 0;
+    this.backSegment_ = null;
+    this.backDistance_ = 0;
+};
+Vehicle.prototype.setColour = function(colour) {
+    for (var i = 0; i < this.node.childNodes.length; i++) {
+        this.node.childNodes[i].setAttribute('fill', colour);
+    }
+};
+Vehicle.prototype.setNumber = function(number) {
+    var text = this.textNode_;
+    while (text.firstChild) {
+        text.removeChild(text.firstChild);
+    }
+    if (number !== undefined) {
+        text.appendChild(document.createTextNode(number));
+    }
+};
+Vehicle.prototype.couple = function(nextVehicle) {
+    if (this.nextVehicle || nextVehicle.prevVehicle) {
+        throw Error("Vehicle already coupled");
+    }
+    this.nextVehicle = nextVehicle;
+    nextVehicle.prevVehicle = this;
+    nextVehicle.moveTo(this.backSegment_, this.backDistance_ + nextVehicle.LENGTH + 2);
+    var n = trains.indexOf(nextVehicle);
+    if (n === -1) throw Error("Vehicle wasn't a train")
+    trains.splice(n, 1);
+    this.coupler.style.visibility = 'visible';
+};
+Vehicle.prototype.uncouple = function() {
+    if (this.nextVehicle) {
+        if (this.nextVehicle.prevVehicle !== this) {
+            throw Error("nextVehicle wasn't connected to us");
+        }
+        this.nextVehicle.prevVehicle = null;
+        trains.push(this.nextVehicle);
+        this.nextVehicle = null;
+    }
+    this.coupler.style.visibility = 'hidden';
+};
+Vehicle.prototype.lengthToEnd = function() {
+    var len = this.LENGTH + 2;
+    if (this.nextVehicle) {
+        len += this.nextVehicle.lengthToEnd();
+    }
+    return len;
+};
+Vehicle.prototype.moveTo = function(segment, distance) {
+    this.backSegment_ = segment;
+    this.backDistance_ = distance;
+    this.moveBy(0);
+};
+Vehicle.prototype.moveBy = function(delta) {
+    var locTrainEnd;
+    if (delta >= 0) {
+        if (!this.prevVehicle) {
+            locTrainEnd = this.backSegment_.walk(this.backDistance_ + delta - this.AXLE_DISTANCE - this.LENGTH / 2 + this.lengthToEnd());
+            if (locTrainEnd[2] !== 0) {
+                locoActualSpeed = 0;
+                delta -= locTrainEnd[2];
+            }
+        }
+        var locBackAxle = this.backSegment_.walk(this.backDistance_ + delta);
+        var locFrontAxle = locBackAxle[0].walk(locBackAxle[1] - 2 * this.AXLE_DISTANCE);
+    } else {
+        var locFrontAxle = this.backSegment_.walk(this.backDistance_ - 2 * this.AXLE_DISTANCE + delta);
+        var locBackAxle = locFrontAxle[0].walk(locFrontAxle[1] + 2 * this.AXLE_DISTANCE);
+        var backSegment = locBackAxle[0];
+        if (!this.prevVehicle && backSegment.turnout && backSegment.prevSegment.nextSegment !== backSegment) {
+            backSegment.turnout.toggle();
+        }
+        if (locFrontAxle[2] !== 0) {
+            locoActualSpeed = 0;
+        }
+    }
+    this.frontSegment_ = locFrontAxle[0];
+    this.frontDistance_ = locFrontAxle[1];
+    this.backSegment_ = locBackAxle[0];
+    this.backDistance_ = locBackAxle[1];
+    if (this.backSegment_.turnout) {
+        this.backSegment_.turnout.hasVehicle = true;
+    }
+    var xyFrontAxle = locFrontAxle[0].calculateCoordinates(locFrontAxle[1]);
+    var xyBackAxle = locBackAxle[0].calculateCoordinates(locBackAxle[1]);
+    this.coupler.setAttribute('x1', xyBackAxle.x);
+    this.coupler.setAttribute('y1', xyBackAxle.y);
+    if (this.prevVehicle) {
+        this.prevVehicle.coupler.setAttribute('x2', xyFrontAxle.x);
+        this.prevVehicle.coupler.setAttribute('y2', xyFrontAxle.y);
+    }
+    var xyMid = {
+        x: (xyBackAxle.x + xyFrontAxle.x) / 2,
+        y: (xyBackAxle.y + xyFrontAxle.y) / 2
+    };
+    var angle = -Math.atan2(xyBackAxle.x - xyFrontAxle.x, xyBackAxle.y - xyFrontAxle.y);
+    angle = angle / Math.PI * 180;
+    this.node.setAttribute('transform',
+        'rotate(' + angle + ', ' + xyMid.x + ',' + xyMid.y + ') ' +
+        'translate(' + (xyMid.x - this.WIDTH / 2) + ',' + (xyMid.y - this.LENGTH / 2) + ')');
+    if (this.nextVehicle) {
+        this.nextVehicle.moveTo(this.backSegment_, this.backDistance_ + this.nextVehicle.LENGTH + 2);
+    }
+    if (delta > 0) {
+        for (var i = 0; i < trains.length; i++) {
+            var train = trains[i];
+            if (train.frontSegment_ === locTrainEnd[0] && train.frontDistance_ <= locTrainEnd[1]) {
+                var lastCar = this;
+                while (lastCar.nextVehicle) {
+                    lastCar = lastCar.nextVehicle;
+                }
+                var audio = document.getElementById('couple');
+                audio.volume = 0.2;
+                audio.play();
+                lastCar.couple(train);
+                locoActualSpeed = 0;
+                checkWin();
+            }
+        }
+    }
+};
+
+var HEADSHUNT_OVERFLOW = 160;
+var PATH_SEGMENTS = [
+    new StraightSegment(8, 104 + HEADSHUNT_OVERFLOW, 0, -HEADSHUNT_OVERFLOW),
+    new StraightSegment(8, 104, 0, -32),
+    new CurveSegment(48, 71, 180, 45),
+    new StraightSegment(19.716, 42.716, 22.627, -22.628),
+    new CurveSegment(70.627, 48.372, 225, 45),
+    new StraightSegment(70.627, 8.372, 51, 0),
+    new CurveSegment(48, 71, 225, 45),
+    new StraightSegment(48, 31, 32, 0),
+    new StraightSegment(80, 31, 51, 0),
+    new CurveSegment(48, 71, 270, 45),
+    new CurveSegment(104.568, 14.431, 135, -45),
+    new StraightSegment(104.568, 54.431, 19, 0)
+];
+
+function init() {
+    function bilateralLink(i, j) {
+        PATH_SEGMENTS[i].nextSegment = PATH_SEGMENTS[j];
+        PATH_SEGMENTS[j].prevSegment = PATH_SEGMENTS[i];
+    }
+    bilateralLink(0, 1); bilateralLink(1, 2); bilateralLink(2, 3);
+    bilateralLink(3, 4); bilateralLink(4, 5); bilateralLink(2, 6);
+    bilateralLink(6, 7); bilateralLink(7, 8); bilateralLink(6, 9);
+    bilateralLink(9, 10); bilateralLink(10, 11);
+
+    drawTrack('straight', 'translate(4, 103)');
+    drawTrack('straight', 'translate(4, 87)');
+    drawTrack('straight', 'translate(4, 71)');
+    drawTrack('curve', 'translate(4, 51)');
+    drawTrack('curve', 'rotate(22.5, -82.197, 55.555)');
+    var turnout1Node = drawTrack('turnout', 'rotate(45, -1.077, 56.328)');
+    drawTrack('curve', 'rotate(45, 23.065, 66.328)');
+    drawTrack('curve', 'rotate(67.5, 36.082, 54.112)');
+    drawTrack('straight', 'rotate(90, 41.127, 45.5)');
+    drawTrack('straight', 'rotate(90, 49.127, 53.5)');
+    drawTrack('straight', 'rotate(90, 57.127, 61.5)');
+    drawTrack('buffer', 'rotate(90, 59.627, 64)');
+    var turnout2Node = drawTrack('turnout', 'rotate(90, 26.5, 53.5)');
+    drawTrack('straight', 'rotate(90, 34.5, 61.5)');
+    drawTrack('straight', 'rotate(90, 42.5, 69.5)');
+    drawTrack('straight', 'rotate(90, 50.5, 77.5)');
+    drawTrack('buffer', 'rotate(90, 53, 80)');
+    drawTrack('curve', 'rotate(-67.5, 70.117, -28.108)');
+    drawTrack('curve', 'rotate(-90, 71.5, -13.068)');
+    drawTrack('straight', 'rotate(90, 35.068, 85.5)');
+    drawTrack('buffer', 'rotate(90, 37.568, 88)');
+    var uncoupler1Node = drawTrack('uncoupler', 'rotate(-45, 48, 71)');
+    var uncoupler2Node = drawTrack('uncoupler', '');
+    var uncoupler3Node = drawTrack('uncoupler', 'rotate(45, 64, 32.372)');
+
+    turnouts.push(new Turnout(turnout1Node, 2, 3, 6), new Turnout(turnout2Node, 6, 7, 9));
+    uncouplers.push(new Uncoupler(uncoupler1Node, 4), new Uncoupler(uncoupler2Node, 8), new Uncoupler(uncoupler3Node, 10));
+
+    for (var i = TRAIN_LENGTH; i >= 0; i--) {
+        var div = document.createElement('div');
+        div.className = 'goalCar';
+        div.appendChild(document.createTextNode(i || '\xa0'));
+        div.style.backgroundColor = i ? CAR_COLOURS[i - 1] : LOCO_COLOUR;
+        document.getElementById('goalCars').appendChild(div);
+    }
+    locomotive = new Vehicle(true);
+    locomotive.setColour(LOCO_COLOUR);
+    for (var i = 0; i < CAR_COUNT; i++) {
+        allCars[i] = new Vehicle(false);
+        trains[i] = allCars[i];
+    }
+    
+    reset(location.hash.substring(1));
+
+    window.addEventListener('keydown', keydown);
+    window.addEventListener('keyup', keyup);
+    var leftButton = document.getElementById('leftButton');
+    leftButton.addEventListener('mousedown', leftButtonDown);
+    leftButton.addEventListener('touchstart', leftButtonDown);
+    leftButton.addEventListener('mouseup', buttonUp);
+    leftButton.addEventListener('touchend', buttonUp);
+    var rightButton = document.getElementById('rightButton');
+    rightButton.addEventListener('mousedown', rightButtonDown);
+    rightButton.addEventListener('touchstart', rightButtonDown);
+    rightButton.addEventListener('mouseup', buttonUp);
+    rightButton.addEventListener('touchend', buttonUp);
+    
+    setInterval(updateTrains, 15);
+}
+
+function drawTrack(defId, transform) {
+    var node = document.getElementById(defId).cloneNode(true);
+    node.setAttribute('class', defId);
+    node.removeAttribute('id');
+    if (transform) node.setAttribute('transform', transform);
+    document.getElementById('trackGroup').appendChild(node);
+    return node;
+}
+
+function keydown(e) {
+    if (!controlsActive) return;
+    if (e.key === 'ArrowRight') {
+        rightButtonDown();
+    } else if (e.key === 'ArrowLeft') {
+        leftButtonDown();
+    } else if (e.key >= '1' && e.key <= '9') {
+        var index = Number(e.key) - 1;
+        if (turnouts[index]) turnouts[index].toggle();
+    } else if (e.key === ' ' || e.key === 'Spacebar') {
+        uncouplers.forEach(u => u.activate());
+    }
+    if (['ArrowRight', 'ArrowLeft', ' '].includes(e.key)) {
+        e.preventDefault();
+    }
+}
+
+function keyup(e) {
+    if (!controlsActive) return;
+    if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+        buttonUp();
+        e.preventDefault();
+    }
+}
+
+function leftButtonDown() { locoDesiredSpeed = -MAX_SPEED; }
+function rightButtonDown() { locoDesiredSpeed = MAX_SPEED; }
+function buttonUp() { locoDesiredSpeed = 0; }
+
+function reset(opt_key) {
+    clearTimeout(timePid);
+    var key = Number(opt_key);
+    if (!key || key < 0 || key >= PERMUTATIONS) {
+        key = Math.floor(Math.random() * PERMUTATIONS);
+    }
+    location.hash = key;
+    
+    var availableCars = [];
+    for(var i = 0; i < CAR_COUNT; i++) availableCars.push(i);
+
+    carOrder = [];
+    var tempKey = key;
+    for (var i = 1; i <= TRAIN_LENGTH; i++) {
+        var index = tempKey % availableCars.length;
+        carOrder.push(availableCars[index]);
+        availableCars.splice(index, 1);
+        tempKey = Math.floor(tempKey / availableCars.length);
+    }
+    
+    var goalCarsDiv = document.getElementById('goalCars');
+    while(goalCarsDiv.firstChild) goalCarsDiv.removeChild(goalCarsDiv.firstChild);
+
+    for (var i = 0; i < TRAIN_LENGTH; i++) {
+        var div = document.createElement('div');
+        div.className = 'goalCar';
+        div.textContent = i + 1;
+        div.style.backgroundColor = CAR_COLOURS[i];
+        goalCarsDiv.appendChild(div);
+    }
+    var divLoco = document.createElement('div');
+    divLoco.className = 'goalCar';
+    divLoco.innerHTML = '&nbsp;';
+    divLoco.style.backgroundColor = LOCO_COLOUR;
+    goalCarsDiv.appendChild(divLoco);
+
+    locomotive.uncouple();
+    trains = [];
+    for (var i = 0; i < CAR_COUNT; i++) {
+        allCars[i].uncouple();
+        trains.push(allCars[i]);
+        var orderIndex = carOrder.indexOf(i);
+        if (orderIndex !== -1) {
+            allCars[i].setColour(CAR_COLOURS[orderIndex]);
+            allCars[i].setNumber(orderIndex + 1);
+        } else {
+            allCars[i].setColour(SKIP_COLOUR);
+            allCars[i].setNumber(undefined);
+        }
+    }
+    
+    locoActualSpeed = 0;
+    locoDesiredSpeed = 0;
+    locomotive.moveTo(PATH_SEGMENTS[5], 20);
+    allCars[0].moveTo(PATH_SEGMENTS[5], 36);
+    allCars[1].moveTo(PATH_SEGMENTS[5], 52);
+    allCars[2].moveTo(PATH_SEGMENTS[8], 20);
+    allCars[3].moveTo(PATH_SEGMENTS[8], 36);
+    allCars[4].moveTo(PATH_SEGMENTS[8], 52);
+    allCars[5].moveTo(PATH_SEGMENTS[11], 20);
+    allCars[6].moveTo(PATH_SEGMENTS[11], 36);
+    allCars[7].moveTo(PATH_SEGMENTS[11], 52);
+    
+    timeStart = Date.now();
+    timePid = setInterval(updateTimer, 1000);
+    updateTimer();
+    controlsActive = true;
+}
+
+
+function factorial(n) {
+    for (var f = 1, i = 2; i <= n; i++) f *= i;
+    return f;
+}
+
+function updateTrains() {
+    if (locoActualSpeed !== locoDesiredSpeed) {
+        var diff = Math.min(Math.abs(locoDesiredSpeed - locoActualSpeed), locoAcceleration);
+        locoActualSpeed += (locoDesiredSpeed > locoActualSpeed ? 1 : -1) * diff;
+    }
+    if (locoActualSpeed !== 0) {
+        turnouts.forEach(t => t.hasVehicle = false);
+        trains.forEach(t => t.moveBy(locoActualSpeed));
+        locomotive.moveBy(locoActualSpeed);
+    }
+}
+
+function createSvgElement(name) {
+    return document.createElementNS(SVG_NS, name);
+}
+
+function updateTimer() {
+    var totalSeconds = Math.round((Date.now() - timeStart) / 1000);
+    var minutes = Math.floor(totalSeconds / 60);
+    var seconds = String(totalSeconds % 60).padStart(2, '0');
+    document.getElementById('timer').textContent = `${minutes}:${seconds}`;
+}
+
+function checkWin() {
+    var vehicle = locomotive;
+    var isWin = true;
+    for (var i = 0; i < TRAIN_LENGTH; i++) {
+        vehicle = vehicle.nextVehicle;
+        if (!vehicle || vehicle.textNode_.textContent != (i + 1)) {
+            isWin = false;
+            break;
+        }
+    }
+    if (vehicle && vehicle.nextVehicle) isWin = false;
+
+    if (isWin) {
+        document.getElementById('win').play();
+        clearInterval(timePid);
+        controlsActive = false;
+        
+        // Show Modal
+        pwdEl.textContent = FIXED_PASSWORD;
+        modal.classList.add('active');
+    }
+}
 
 // --- MODAL & CLIPBOARD LOGIC ---
 okBtn.addEventListener('click', () => modal.classList.remove('active'));
 modal.addEventListener('click', e => { if (e.target === modal) modal.classList.remove('active'); });
 newTrainBtn.addEventListener('click', () => reset());
+
 async function copyToClipboard(text) {
-  try {
-    if (navigator.clipboard && window.isSecureContext) {
-      await navigator.clipboard.writeText(text); return true;
-    } else {
-      const ta = document.createElement('textarea');
-      ta.value = text; ta.setAttribute('readonly', '');
-      ta.style.position = 'fixed'; ta.style.top = '-9999px';
-      document.body.appendChild(ta); ta.select();
-      const ok = document.execCommand('copy');
-      document.body.removeChild(ta); return ok;
+    try {
+        if (navigator.clipboard && window.isSecureContext) {
+            await navigator.clipboard.writeText(text);
+            return true;
+        } else {
+            // Fallback for older browsers
+            const ta = document.createElement('textarea');
+            ta.value = text;
+            ta.setAttribute('readonly', '');
+            ta.style.position = 'fixed';
+            ta.style.top = '-9999px';
+            document.body.appendChild(ta);
+            ta.select();
+            const ok = document.execCommand('copy');
+            document.body.removeChild(ta);
+            return ok;
+        }
+    } catch (e) {
+        console.warn('Clipboard failed:', e);
+        return false;
     }
-  } catch (e) { console.warn('Clipboard failed:', e); return false; }
 }
+
 async function handleCopy() {
     const textToCopy = (pwdEl.textContent || '').trim();
-    if (!textToCopy || textToCopy === '—') return;
+    if (!textToCopy) return;
     const ok = await copyToClipboard(textToCopy);
     copyBtn.textContent = ok ? '✅ Kopyalandı' : '❌ Hata';
     setTimeout(() => copyBtn.textContent = '📋 Kopyala', 1500);
 }
 copyBtn.addEventListener('click', handleCopy);
+
+window.addEventListener('load', init);
 
 </script>
 </body>
